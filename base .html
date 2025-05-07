@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Hospital Management{% endblock %}</title>
+    <link rel="icon" type="image/png" href="/static/images/favicon.png" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <script src="//code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script src="//cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="//cdn.datatables.net/2.2.1/css/dataTables.bootstrap4.css">
+    <script src="//cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
+    <link href="//cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="//cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script src="//spcallmanager.spefin.it/Config/sweetalert.min.js"></script>
+
+
+    <style>
+        /* Make html and body take full height */
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+        }
+
+        /* Flexbox layout for body */
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background-image: url("/static/images/image.png") !important;
+            background-repeat: no-repeat !important;
+            background-position: -5vw -1vw !important;
+            background-size: 125% !important;
+
+        }
+
+        /* Main content takes up remaining space */
+        .container {
+            flex-grow: 1;
+            min-width: 95% !important;
+        }
+
+        /* Custom styles for active navbar items */
+        .navbar-nav .nav-item.active .nav-link {
+            background-color: #19554f;
+            /* Change background color to blue (you can adjust the color) */
+            color: white !important;
+            /* Ensure the text color is white */
+            font-weight: bold;
+            /* Make the text bold */
+            border-radius: 5px;
+            /* Optional: rounded corners */
+        }
+
+        .navbar-nav .nav-item.active .nav-link:hover {
+            background-color: #19554f;
+            /* Darker shade of blue on hover */
+        }
+
+        .shadow-lg {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+            border-radius: 0.5rem;
+        }
+
+        .no-shadow .container {
+            box-shadow: none !important;
+        }
+
+        .successbutton {
+            background: linear-gradient(127.31deg, #8FAC5E -6.75%, #5C792B 118.45%) !important;
+            border-radius: 0.3125vw !important;
+            color: white !important;
+        }
+
+        .successbuttonGradient {
+            background: linear-gradient(127.31deg, #8FAC5E -6.75%, #5C792B 118.45%) !important;
+            border-radius: 0.3125vw !important;
+            color: white !important;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            /* Allows horizontal scrolling */
+            -webkit-overflow-scrolling: touch;
+            /* Smooth scrolling on mobile */
+        }
+
+        table.dataTable {
+            border-collapse: collapse !important;
+            margin-bottom: 13px;
+        }
+
+        .dataTables_wrapper {
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            /* Ensures it adjusts within the container */
+            max-width: 100%;
+            /* Prevents unnecessary overflow */
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .dataTables_wrapper {
+            position: relative;
+            clear: both;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            padding: 0.5em 1em;
+            margin: 0 0.1em;
+        }
+
+        .dataTables_wrapper .dataTables_filter {
+            float: right;
+        }
+
+        .dataTables_wrapper .dataTables_filter label {
+            font-weight: bold;
+        }
+
+        .dataTables_wrapper .dataTables_info {
+            margin-top: 10px;
+        }
+
+        .dataTables_wrapper .dataTables_filter input {
+            /* float: right; */
+            margin-left: 0px;
+            margin-bottom: 8px !important;
+        }
+
+        .dataTable thead th {
+            white-space: nowrap !important;
+            background: #19554f !important;
+            color: white;
+        }
+
+        .dataTable tbody tr td:nth-child(3) {
+            white-space: nowrap !important;
+        }
+
+        .table-nowrap {
+            white-space: nowrap;
+        }
+
+        /* Modal Styling */
+        .modal-body {
+            background-color: #f9f9f9;
+            padding: 20px;
+            text-align: left;
+        }
+
+        .userModal {
+            padding-bottom: 0 !important;
+            border-radius: 8px;
+        }
+
+        .modal-title {
+            color: white;
+            width: 100%;
+            font-weight: bold;
+            margin-bottom: 0px;
+        }
+
+        .title {
+            margin-bottom: 0;
+            color: #fff;
+        }
+
+        .widget {
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            padding-left: 17px;
+        }
+
+        a {
+            margin-left: 7px;
+            color: blue;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        a:hover {
+            color: #0808a5;
+        }
+
+        .modal-footer {
+            background-color: #f1f1f1;
+        }
+
+        /* Responsive Design */
+        @media (min-width: 576px) {
+            .modal-dialog {
+                max-width: 900px;
+                /* Adjust modal width */
+                margin: auto;
+            }
+        }
+
+        .input-group-text {
+            background-color: #19554f;
+            color: white;
+            border: none;
+        }
+
+        .select2-container .select2-selection--single {
+            box-sizing: border-box;
+            cursor: pointer;
+            display: block;
+            min-height: 32px !important;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .select2-container--classic .select2-selection--single .select2-selection__arrow {
+            background-color: #ddd;
+            border: none;
+            border-left: 1px solid #aaa;
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+            height: 32px !important;
+            position: absolute;
+            top: 1px;
+            right: 1px;
+            width: 20px;
+            background-image: -webkit-linear-gradient(top, #eee 50%, #ccc 100%);
+            background-image: -o-linear-gradient(top, #eee 50%, #ccc 100%);
+            background-image: linear-gradient(to bottom, #eee 50%, #ccc 100%);
+            background-repeat: repeat-x;
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFEEEEEE', endColorstr='#FFCCCCCC', GradientType=0);
+        }
+
+        .btn-xs {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            line-height: 1;
+            border-radius: 0.2rem;
+        }
+    </style>
+
+    <script type="text/javascript">
+        function isValidEmail(email) {
+            var re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            return re.test(email);
+        }
+
+        function validatePhoneNumber(phoneNumber) {
+            const regEx = /^(\+|00)\d{1,4}\d{0,15}$/;
+            return regEx.test(phoneNumber);
+        }
+
+        function swalAlert(params) {
+            if (typeof params.onConfirmFunction == 'undefined') {
+                params.onConfirmFunction = closeWidget;
+            }
+
+            if (typeof params.onCloseFunction == 'undefined') {
+                params.onCloseFunction = swal.close;
+            }
+
+            if (typeof params.buttons == 'undefined') {
+                params.buttons = true;
+            }
+
+            if (typeof params.closeOnClickOutside == 'undefined') {
+                params.closeOnClickOutside = false;
+            }
+
+            swal({
+                title: params.title,
+                text: params.text,
+                icon: params.icon,
+                button: params.button,
+                buttons: params.buttons,
+                dangerMode: params.dangerMode,
+                closeOnClickOutside: params.closeOnClickOutside,
+            }).then((isConfirm) => {
+                if (isConfirm) {
+                    params.onConfirmFunction();
+                } else {
+                    params.onCloseFunction();
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            $('body').tooltip({
+                selector: '[data-bs-toggle="tooltip"]',
+                trigger: 'hover' // Optional: Adjust trigger if needed (hover, click, focus)
+            });
+
+            // Event delegation for dynamically added .toggle-password elements
+            $(document).on('click', '.toggle-password', function () {
+                const passwordInput = $(this).siblings('[data-toggle-password="true"]');
+                const passwordIcon = $(this).find('[data-password-icon]'); // Target icon using attribute
+
+                if (passwordInput.length) {
+                    const isPassword = passwordInput.attr('type') === 'password';
+                    passwordInput.attr('type', isPassword ? 'text' : 'password'); // Toggle input type
+                    passwordIcon.toggleClass('fa-eye fa-eye-slash'); // Toggle icon classes
+                }
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark" style="border-bottom: 1px solid #e7f0c9;">
+        <div class="container-fluid">
+
+            <!-- Toggler Button for Mobile View -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Navbar Links -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav"> <!-- ms-auto aligns the nav items to the right -->
+
+                    <li class="nav-item {% if request.endpoint == 'hospitalManagement.dashboard' %}active{% endif %}">
+                        <a class="nav-link " style="color: #055160; font-weight: bold;"
+                            href="{{ url_for('hospitalManagement.dashboard') }}">
+                            <i class="fa fa-home"></i> Home 
+                        </a>
+                    </li>
+
+                    {% if session.get('user_id') %}
+                    <!-- If user is authenticated, show Logout -->
+                    {% if session.get('is_admin') == 1 %}
+                    <li class="nav-item {% if request.endpoint == 'hospitalManagement.users' %}active{% endif %}">
+                        <a class="nav-link " style="color: #055160; font-weight: bold;"
+                            href="{{ url_for('hospitalManagement.users') }}">
+                            <i class="fa fa-users"></i> Users 
+                        </a>
+                    </li>
+                    {% else %}
+                    {% if session.get('role') in ['doctor', 'nurse', 'receptionist'] %}
+
+                    <li class="nav-item {% if request.endpoint == 'hospitalManagement.patients' %}active{% endif %}">
+                        <a class="nav-link " style="color: #055160; font-weight: bold;"
+                            href="{{ url_for('hospitalManagement.patients') }}">
+                            <i class="fa fa-users"></i> Patients 
+                        </a>
+                    </li>
+                    {% endif %}
+
+
+                    {% if session.get('role') == 'receptionist' %}
+                    <li class="nav-item {% if request.endpoint == 'hospitalManagement.payments' %}active{% endif %}">
+                        <a class="nav-link " style="color: #055160; font-weight: bold;"
+                            href="{{ url_for('hospitalManagement.payments') }}">
+                            <i class="fa fa-credit-card"></i> Payments 
+                        </a>
+                    </li>
+                    {% endif %}]
+                    <li class="nav-item {% if request.endpoint == 'hospitalManagement.appointments' %}active{% endif %}">
+                        <a class="nav-link " style="color: #055160; font-weight: bold;"
+                            href="{{ url_for('hospitalManagement.appointments') }}">
+                            <i class="fa fa-credit-card"></i> Appointments 
+                        </a>
+                    </li>
+                    {% endif %}
+                    <!-- If user is authenticated, show Logout -->
+                    <li class="nav-item {% if request.endpoint == 'auth.logout' %}active{% endif %}">
+                        <a class="nav-link " style="color: #ba0e0e; font-weight: bold;"
+                            href="{{ url_for('auth.logout') }}">
+                            <i class="fa fa-sign-out"></i> Log out <!-- Added logout icon -->
+                        </a>
+                    </li>
+                    {% else %}
+                    <!-- If user is not authenticated, show Login and Signup -->
+                    <li class="nav-item {% if request.endpoint == 'auth.login' %}active{% endif %}">
+                        <a class="nav-link" style="color: #055160; font-weight: bold;"
+                            href="{{ url_for('auth.login') }}">
+                            <i class="fa fa-sign-in"></i> Login <!-- Added login icon -->
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+                <ul class="navbar-nav ms-auto"> <!-- ms-auto aligns the nav items to the right -->
+                    <li class="nav-item" style="text-align: right;">
+                        <!-- Logo Section -->
+                        <a class="navbar-brand d-flex flex-column align-items-end"
+                            href="{{ url_for('hospitalManagement.dashboard') }}">
+                            <img src="/static/images/hospital-management.jpg" class="logo"
+                                style="width: 10%;">
+                            {% if session.get('user_id') and session.get('username') %}
+                            <b style="color: #055160; font-size: 12px;">
+                                Welcome, {{ session.get('username') }}
+                            </b>
+                            {% endif %}
+                        </a>
+
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-3 shadow-lg">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center py-3 mt-5">
+        <p style="font-weight: bold;"><strong>&copy; {{ current_year() }} Hospital Management. All rights reserved.</strong></p>
+    </footer>
+
+
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>
